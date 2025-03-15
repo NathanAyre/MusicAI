@@ -14,6 +14,12 @@ public class Test {
         System.out.println(productResult + "\n");
         productResult.applyFunction(Test::myFunction);
         System.out.println(productResult + "\n");
+
+        Layer myLayer = new Layer(2, 1);
+        myLayer.setInput(0, 1.0);
+        myLayer.setInput(1, 0.5);
+        myLayer.propagate();
+        System.out.println(myLayer);
     }
 
     public static Double myFunction(double value) {

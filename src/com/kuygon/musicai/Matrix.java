@@ -13,6 +13,26 @@ public class Matrix {
         this.m = matrix.m;
     }
 
+    public Matrix(int rows, int cols) {
+        m = new double[rows][cols];
+    }
+
+    public int getRows() {
+        return m.length;
+    }
+
+    public int getCols() {
+        return m[0].length;
+    }
+
+    public void setCell(int row, int col, double value) {
+        m[row][col] = value;
+    }
+
+    public double getCell(int row, int col) {
+        return m[row][col];
+    }
+
     public void scale (double scalar) {
         for (int row = 0; row < m.length; row++) {
             for (int col = 0; col < m[0].length; col++) {
