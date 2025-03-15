@@ -1,5 +1,7 @@
 package com.kuygon.musicai;
 
+import java.util.function.Function;
+
 public class Matrix {
     private double[][] m;
 
@@ -15,6 +17,14 @@ public class Matrix {
         for (int row = 0; row < m.length; row++) {
             for (int col = 0; col < m[0].length; col++) {
                 m[row][col] *= scalar;
+            }
+        }
+    }
+
+    public void applyFunction (Function<Double, Double> f) {
+        for (int row = 0; row < m.length; row++) {
+            for (int col = 0; col < m[0].length; col++) {
+                m[row][col] = f.apply(m[row][col]);
             }
         }
     }

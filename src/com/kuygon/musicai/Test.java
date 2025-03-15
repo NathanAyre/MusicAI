@@ -12,5 +12,12 @@ public class Test {
         System.out.println(testMatrix2 + "\n");
         Matrix productResult = Matrix.product(testMatrix, testMatrix2);
         System.out.println(productResult + "\n");
+        productResult.applyFunction(Test::myFunction);
+        System.out.println(productResult + "\n");
+    }
+
+    public static Double myFunction(double value) {
+        value = Math.sqrt(value);
+        return value;
     }
 }
