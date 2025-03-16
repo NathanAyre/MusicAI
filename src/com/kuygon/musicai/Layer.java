@@ -4,12 +4,22 @@ public class Layer {
     private Matrix weights;
     private Matrix input;
     private Matrix output;
+    private Matrix error;
 
     public Layer(int inputs, int outputs) {
         input = new Matrix(1, inputs);
         output = new Matrix(1, outputs);
+        error = new Matrix(1, outputs);
         weights = new Matrix(inputs, outputs);
         weights.applyFunction(Layer::randomise);
+    }
+
+    public void setInputs(Matrix input) {
+        this.input = input;
+    }
+
+    public Matrix getOutputs() {
+        return output;
     }
 
     public void setInput(int inputNum, double value) {
@@ -18,6 +28,10 @@ public class Layer {
 
     public double getOutput(int outputNum) {
         return output.getCell(0, outputNum);
+    }
+
+    public void setErrors(Matrix error) {
+        this.error = error;
     }
 
     public static Double randomise(Double value) {

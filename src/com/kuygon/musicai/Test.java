@@ -16,10 +16,11 @@ public class Test {
         System.out.println(productResult + "\n");
 
         Layer myLayer = new Layer(2, 1);
-        myLayer.setInput(0, 1.0);
-        myLayer.setInput(1, 0.5);
+        myLayer.setInputs(new Matrix(new double[][]{{1.0, 0.5}}));
         myLayer.propagate();
+        Matrix output = myLayer.getOutputs();
         System.out.println(myLayer);
+        System.out.println(output);
     }
 
     public static Double myFunction(double value) {
