@@ -19,8 +19,12 @@ public class Test {
         myLayer.setInputs(new Matrix(new double[][]{{1.0, 0.5}}));
         myLayer.propagate();
         Matrix output = myLayer.getOutputs();
-        System.out.println(myLayer);
-        System.out.println(output);
+        System.out.println(myLayer+"\n");
+
+        myLayer.setErrors(new Matrix(new double[][]{{-1.0}}));
+        myLayer.backPropagate(0.1);
+        myLayer.propagate();
+        System.out.println(myLayer+"\n");
     }
 
     public static Double myFunction(double value) {

@@ -10,7 +10,12 @@ public class Matrix {
     }
 
     public Matrix(Matrix matrix) {
-        this.m = matrix.m;
+        int rowLength = matrix.m[0].length;
+        this.m = new double[matrix.m.length][rowLength];
+        for(int i = 0; i < matrix.m.length; i++)
+        {
+            System.arraycopy(matrix.m[i], 0, this.m[i], 0, rowLength);
+        }
     }
 
     public Matrix(int rows, int cols) {
@@ -49,6 +54,32 @@ public class Matrix {
         }
     }
 
+    public static Matrix add (Matrix m1, Matrix m2) throws Exception {
+        if (m1.m.length != m2.m.length || m1.m[0].length != m2.m[0].length)
+            throw new Exception("M1 and M2 are not the same size");
+        double[][] m3 = new double[m1.m.length][m1.m[0].length];
+
+        for (int row = 0; row < m1.m.length; row++) {
+            for (int col = 0; col < m1.m[0].length; col++) {
+                m3[row][col] = m1.m[row][col] + m2.m[row][col];
+            }
+        }
+        return new Matrix(m3);
+    }
+
+    public static Matrix subtract (Matrix m1, Matrix m2) throws Exception {
+        if (m1.m.length != m2.m.length || m1.m[0].length != m2.m[0].length)
+            throw new Exception("M1 and M2 are not the same size");
+        double[][] m3 = new double[m1.m.length][m1.m[0].length];
+
+        for (int row = 0; row < m1.m.length; row++) {
+            for (int col = 0; col < m1.m[0].length; col++) {
+                m3[row][col] = m1.m[row][col] - m2.m[row][col];
+            }
+        }
+        return new Matrix(m3);
+    }
+
     public static Matrix product (Matrix m1, Matrix m2) throws Exception {
         if (m1.m[0].length != m2.m.length)
             throw new Exception("M1 columns doesn't match M2 rows");
@@ -83,7 +114,7 @@ public class Matrix {
         StringBuilder s = new StringBuilder("[");
         for (int row = 0; row < m.length; row++) {
             if (row > 0)
-                s.append(",\n");
+                s.append(", ");
             s.append("[");
             for (int col = 0; col < m[0].length; col++) {
                 if (col > 0)

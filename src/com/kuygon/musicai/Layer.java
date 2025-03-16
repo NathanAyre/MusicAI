@@ -45,16 +45,33 @@ public class Layer {
         output.applyFunction(Layer::sigmoid);
     }
 
+    public void backPropagate(double rate) throws Exception {
+        Matrix delta = new Matrix(output);
+        delta.applyFunction(Layer::sigmoidGrad);
+        delta.scale(rate);
+        for (int col = 0; col < delta.getCols(); col++) {
+            delta.setCell(0, col, delta.getCell(0, col) * error.getCell(0, col));
+        }
+
+        Matrix tempInput = Matrix.transpose(input);
+        delta = Matrix.product(tempInput, delta);
+        weights = Matrix.subtract(weights, delta);
+    }
+
     private static Double sigmoid(Double value) {
         return (Math.tanh(2.0*value)+1.0)/2.0;
     }
 
+    private static Double sigmoidGrad(Double value) {
+        return 4.0*value*(1.0-value);
+    }
+
     @Override
-    public String toString() { // todo: make toString for Layer prettier
+    public String toString() {
         return "Layer{" +
-                "weights=" + weights +
-                ", input=" + input +
-                ", output=" + output +
+                "\nweights=" + weights +
+                ",\ninput=" + input +
+                ",\noutput=" + output +
                 '}';
     }
 }
