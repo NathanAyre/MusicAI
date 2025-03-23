@@ -5,6 +5,7 @@ public class Layer {
     private Matrix input;
     private Matrix output;
     private Matrix error;
+    private Matrix delta;
 
     public Layer(int inputs, int outputs) {
         input = new Matrix(1, inputs);
@@ -18,8 +19,20 @@ public class Layer {
         this.input = input;
     }
 
+    public int getSize() {
+        return output.getCols();
+    }
+
     public Matrix getOutputs() {
         return output;
+    }
+
+    public Matrix getDeltas() {
+        return delta;
+    }
+
+    public Matrix getWeights() {
+        return weights;
     }
 
     public void setInput(int inputNum, double value) {
@@ -46,20 +59,25 @@ public class Layer {
     }
 
     public void backPropagate(double rate) throws Exception {
-        Matrix delta = new Matrix(output);
+        delta = new Matrix(output);
         delta.applyFunction(Layer::sigmoidGrad);
-        delta.scale(rate);
         for (int col = 0; col < delta.getCols(); col++) {
             delta.setCell(0, col, delta.getCell(0, col) * error.getCell(0, col));
         }
 
         Matrix tempInput = Matrix.transpose(input);
-        delta = Matrix.product(tempInput, delta);
-        weights = Matrix.subtract(weights, delta);
+        Matrix deltaW = Matrix.product(tempInput, delta);
+        deltaW.scale(rate);
+        weights = Matrix.subtract(weights, deltaW);
+        weights.applyFunction(Layer::limit);
     }
 
     private static Double sigmoid(Double value) {
-        return (Math.tanh(2.0*value)+1.0)/2.0;
+        return (Math.tanh(1.5*value)+1.0)/2.0;
+    }
+
+    private static Double limit(Double value) {
+        return Math.clamp(value, -1.0, 1.0);
     }
 
     private static Double sigmoidGrad(Double value) {
