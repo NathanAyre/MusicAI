@@ -80,7 +80,7 @@ public class Matrix {
         return new Matrix(m3);
     }
 
-    public static Matrix product (Matrix m1, Matrix m2) throws Exception {
+    public static Matrix multiply(Matrix m1, Matrix m2) throws Exception {
         if (m1.m[0].length != m2.m.length)
             throw new Exception("M1 columns doesn't match M2 rows");
         double[][] m3 = new double[m1.m.length][m2.m[0].length];

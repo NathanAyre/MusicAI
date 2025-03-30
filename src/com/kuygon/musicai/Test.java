@@ -6,6 +6,7 @@ public class Test {
         layerTest();
         leftRightLayerTest();
         leftRightNetworkTest();
+        dftTest();
     }
 
     public static void layerTest() throws Exception {
@@ -29,7 +30,7 @@ public class Test {
         System.out.println(testMatrix + "\n");
         Matrix testMatrix2 = Matrix.transpose(testMatrix);
         System.out.println(testMatrix2 + "\n");
-        Matrix productResult = Matrix.product(testMatrix, testMatrix2);
+        Matrix productResult = Matrix.multiply(testMatrix, testMatrix2);
         System.out.println(productResult + "\n");
         productResult.applyFunction(Test::myFunction);
         System.out.println(productResult + "\n");
@@ -115,6 +116,20 @@ public class Test {
         System.out.println(Matrix.add(left, right) + ": " + output);
 
         System.out.println(myNetwork);
+    }
+
+    public static void dftTest() {
+        double[] data = new double[256];
+        for (int i = 0; i < data.length; i++) {
+            //data[i] = (i < 128 ? -1 : +1);
+            //data[i] = Math.sin(2 * Math.PI * i / data.length);
+            data[i] = Math.random() * 2 - 1;
+        }
+
+        Complex[] results = AudioProcessor.discreteFourierTransform(data);
+        for (Complex result : results) {
+            System.out.println(result.getLength());
+        }
     }
 
     public static Double myFunction(double value) {

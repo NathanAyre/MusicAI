@@ -54,7 +54,7 @@ public class Layer {
     // it gets real here
 
     public void propagate() throws Exception {
-        output = Matrix.product(input, weights);
+        output = Matrix.multiply(input, weights);
         output.applyFunction(Layer::sigmoid);
     }
 
@@ -66,7 +66,7 @@ public class Layer {
         }
 
         Matrix tempInput = Matrix.transpose(input);
-        Matrix deltaW = Matrix.product(tempInput, delta);
+        Matrix deltaW = Matrix.multiply(tempInput, delta);
         deltaW.scale(rate);
         weights = Matrix.subtract(weights, deltaW);
         weights.applyFunction(Layer::limit);
