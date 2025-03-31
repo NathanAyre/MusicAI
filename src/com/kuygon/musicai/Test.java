@@ -6,7 +6,11 @@ public class Test {
         layerTest();
         leftRightLayerTest();
         leftRightNetworkTest();
+        double time = System.currentTimeMillis();
         dftTest();
+        System.out.println(System.currentTimeMillis() - time);
+        System.out.println();
+        fftTest();
     }
 
     public static void layerTest() throws Exception {
@@ -119,17 +123,36 @@ public class Test {
     }
 
     public static void dftTest() {
-        double[] data = new double[256];
+        double[] data = new double[1024];
         for (int i = 0; i < data.length; i++) {
             //data[i] = (i < 128 ? -1 : +1);
-            //data[i] = Math.sin(2 * Math.PI * i / data.length);
-            data[i] = Math.random() * 2 - 1;
+            data[i] = Math.sin(2 * Math.PI * i / data.length);
+            //data[i] = Math.random() * 2 - 1;
         }
 
         Complex[] results = AudioProcessor.discreteFourierTransform(data);
         for (Complex result : results) {
+            //System.out.println(result.getLength());
+        }
+    }
+
+    public static void fftTest() {
+        double[] data = new double[1024];
+        for (int i = 0; i < data.length; i++) {
+            //data[i] = (i < 128 ? -1 : +1);
+            data[i] = Math.sin(2 * Math.PI * i / data.length);
+            //data[i] = Math.random() * 2 - 1;
+        }
+
+        double time = System.currentTimeMillis();
+
+        Complex[] results = AudioProcessor.fastFourierTransform(data);
+        time = System.currentTimeMillis() - time;
+        for (Complex result : results) {
             System.out.println(result.getLength());
         }
+
+        System.out.println(time);
     }
 
     public static Double myFunction(double value) {
