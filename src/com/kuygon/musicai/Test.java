@@ -1,5 +1,11 @@
 package com.kuygon.musicai;
 
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.UnsupportedAudioFileException;
+import java.io.File;
+import java.io.IOException;
+
 public class Test {
     public static void main(String[] args) throws Exception {
         matrixTest();
@@ -11,6 +17,8 @@ public class Test {
         System.out.println(System.currentTimeMillis() - time);
         System.out.println();
         fftTest();
+        // sampleTest();
+        spectrumTest();
     }
 
     public static void layerTest() throws Exception {
@@ -153,6 +161,20 @@ public class Test {
         }
 
         System.out.println(time);
+    }
+
+    public static void sampleTest() throws UnsupportedAudioFileException, IOException {
+        AudioInputStream stream = AudioSystem.getAudioInputStream(new File("resources/440Hz.wav"));
+        AudioProcessor.Sample sample = AudioProcessor.readSample(stream, 512);
+        System.out.println(sample);
+    }
+
+    public static void spectrumTest() throws UnsupportedAudioFileException, IOException {
+        AudioInputStream stream = AudioSystem.getAudioInputStream(new File("resources/dtmf-3.wav"));
+        AudioProcessor.Sample sample = AudioProcessor.readSample(stream, 4096);
+        assert sample != null;
+        AudioProcessor.Spectrum spectrum = AudioProcessor.sampleToSpectrum(sample);
+        System.out.println(spectrum);
     }
 
     public static Double myFunction(double value) {
