@@ -7,6 +7,24 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
 public class AudioProcessor {
+    public record Notes(double[][] amplitudes) {
+        public static String[] NOTES = new String[]{"C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"};
+
+        public static int frequencyToNoteNum(double frequency) {
+            return (int) Math.round(12*Math.log(frequency/440) / Math.log(2) + 57);
+        }
+
+        public String toString() {
+            StringBuilder s = new StringBuilder();
+            for (int octaveNum = 0; octaveNum < 10; octaveNum++) {
+                for (int noteNum = 0; noteNum < 12; noteNum++) {
+                    s.append(NOTES[noteNum] + octaveNum + ": " + amplitudes[octaveNum][noteNum] + "\n");
+                }
+            }
+            return s.toString();
+        }
+    }
+
     public record Sample(double[] amplitudes, double sampleFreq) {
         public String toString() {
             StringBuilder s = new StringBuilder("Sample frequency = " + sampleFreq + "\n");
@@ -34,6 +52,27 @@ public class AudioProcessor {
         }
 
         return new Spectrum(amplitudes, sample.sampleFreq);
+    }
+
+    public static Notes spectrumToNotes(Spectrum spectrum) {
+        double[][] notes = new double[10][12];
+        //for each frequency in the spectrum
+        for (int frequencyInterval = 0; frequencyInterval < spectrum.amplitudes.length; frequencyInterval++) {
+            //calculate the frequency of this note and convert to a noteNum and octaveNum
+            double freq = spectrum.sampleFreq * frequencyInterval / spectrum.amplitudes.length;
+            int noteNum = Notes.frequencyToNoteNum(freq);
+            int octaveNum = noteNum / 12;
+            noteNum = noteNum % 12;
+
+            //if we've reached the end of the audio spectrum, break out of the loop
+            if (octaveNum >= 10) break;
+
+            //add its amplitude to the appropriate note in the notes array
+            if (noteNum >= 0 && octaveNum >= 0) notes[octaveNum][noteNum] += spectrum.amplitudes[frequencyInterval];
+        }
+
+        //return the notes array as a new Notes record :D
+        return new Notes(notes);
     }
 
     public static Sample readSample(AudioInputStream inputStream, int sampleSize) {

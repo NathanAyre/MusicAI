@@ -18,7 +18,8 @@ public class Test {
         System.out.println();
         fftTest();
         // sampleTest();
-        spectrumTest();
+        // spectrumTest();
+        notesTest();
     }
 
     public static void layerTest() throws Exception {
@@ -175,6 +176,15 @@ public class Test {
         assert sample != null;
         AudioProcessor.Spectrum spectrum = AudioProcessor.sampleToSpectrum(sample);
         System.out.println(spectrum);
+    }
+
+    public static void notesTest() throws UnsupportedAudioFileException, IOException {
+        AudioInputStream stream = AudioSystem.getAudioInputStream(new File("resources/Wagner_Tristan_opening_(orchestral).wav"));
+        AudioProcessor.Sample sample = AudioProcessor.readSample(stream, 4096*2*16);
+        assert sample != null;
+        AudioProcessor.Spectrum spectrum = AudioProcessor.sampleToSpectrum(sample);
+        AudioProcessor.Notes notes = AudioProcessor.spectrumToNotes(spectrum);
+        System.out.println(notes);
     }
 
     public static Double myFunction(double value) {
