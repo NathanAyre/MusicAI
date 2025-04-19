@@ -11,7 +11,7 @@ public class Test {
         matrixTest();
         layerTest();
         leftRightLayerTest();
-        leftRightNetworkTest();
+        Network network = leftRightNetworkTest(null);
         double time = System.currentTimeMillis();
         dftTest();
         System.out.println(System.currentTimeMillis() - time);
@@ -20,6 +20,7 @@ public class Test {
         // sampleTest();
         // spectrumTest();
         notesTest();
+        saveNetworkTest(network);
     }
 
     public static void layerTest() throws Exception {
@@ -90,27 +91,30 @@ public class Test {
         System.out.println(myLayer);
     }
 
-    public static void leftRightNetworkTest() throws Exception {
-        Network myNetwork = new Network(2, 1, new int[]{4});
+    public static Network leftRightNetworkTest(Network myNetwork) throws Exception {
         Matrix left = new Matrix(new double[][]{{1.0, 0.0}});
         Matrix right = new Matrix(new double[][]{{0.0, 1.0}});
-        for (int step = 0; step < 1000; step++) {
-            myNetwork.setInputs(left);
-            myNetwork.propagate();
-            double output = myNetwork.getOutput(0);
-            double error1 = output - 1.0;
-            myNetwork.setErrors(new Matrix(new double[][]{{error1}}));
-            myNetwork.backPropagate(0.1);
 
-            myNetwork.setInputs(right);
-            myNetwork.propagate();
-            output = myNetwork.getOutput(0);
-            double error2 = output;
-            myNetwork.setErrors(new Matrix(new double[][]{{error2}}));
-            myNetwork.backPropagate(0.1);
+        if (myNetwork == null) {
+            myNetwork = new Network(2, 1, new int[]{4});
+            for (int step = 0; step < 1000; step++) {
+                myNetwork.setInputs(left);
+                myNetwork.propagate();
+                double output = myNetwork.getOutput(0);
+                double error1 = output - 1.0;
+                myNetwork.setErrors(new Matrix(new double[][]{{error1}}));
+                myNetwork.backPropagate(0.1);
 
-            double avgError = Math.sqrt((error1*error1 + error2*error2) / 2);
-            System.out.println(step + ": " + avgError);
+                myNetwork.setInputs(right);
+                myNetwork.propagate();
+                output = myNetwork.getOutput(0);
+                double error2 = output;
+                myNetwork.setErrors(new Matrix(new double[][]{{error2}}));
+                myNetwork.backPropagate(0.1);
+
+                double avgError = Math.sqrt((error1 * error1 + error2 * error2) / 2);
+                System.out.println(step + ": " + avgError);
+            }
         }
 
         myNetwork.setInputs(left);
@@ -129,6 +133,13 @@ public class Test {
         System.out.println(Matrix.add(left, right) + ": " + output);
 
         System.out.println(myNetwork);
+        return myNetwork;
+    }
+
+    public static void saveNetworkTest(Network network) throws Exception {
+        network.saveToFile("results/test.txt");
+        network = Network.loadFromFile("results/test.txt");
+        leftRightNetworkTest(network);
     }
 
     public static void dftTest() {

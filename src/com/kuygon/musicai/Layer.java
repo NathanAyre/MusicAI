@@ -35,6 +35,10 @@ public class Layer {
         return weights;
     }
 
+    public void setWeights(Matrix weights) {
+        this.weights = weights;
+    }
+
     public void setInput(int inputNum, double value) {
         input.setCell(0, inputNum, value);
     }
@@ -86,10 +90,6 @@ public class Layer {
 
     @Override
     public String toString() {
-        return "Layer{" +
-                "\nweights=" + weights +
-                ",\ninput=" + input +
-                ",\noutput=" + output +
-                '}';
+        return "\n" + weights;
     }
 }
