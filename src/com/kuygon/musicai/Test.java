@@ -19,8 +19,9 @@ public class Test {
         fftTest();
         // sampleTest();
         // spectrumTest();
-        notesTest();
-        saveNetworkTest(network);
+        AudioProcessor.Notes notes = notesTest();
+        // saveNetworkTest(network);
+        wordsTest(notes);
     }
 
     public static void layerTest() throws Exception {
@@ -189,13 +190,20 @@ public class Test {
         System.out.println(spectrum);
     }
 
-    public static void notesTest() throws UnsupportedAudioFileException, IOException {
+    public static AudioProcessor.Notes notesTest() throws UnsupportedAudioFileException, IOException {
         AudioInputStream stream = AudioSystem.getAudioInputStream(new File("resources/Wagner_Tristan_opening_(orchestral).wav"));
         AudioProcessor.Sample sample = AudioProcessor.readSample(stream, 4096*2*16);
         assert sample != null;
         AudioProcessor.Spectrum spectrum = AudioProcessor.sampleToSpectrum(sample);
         AudioProcessor.Notes notes = AudioProcessor.spectrumToNotes(spectrum);
         System.out.println(notes);
+
+        return notes;
+    }
+
+    public static void wordsTest(AudioProcessor.Notes notes) {
+        AudioProcessor.MusicalWord musicalWord = AudioProcessor.notesToMusicalWord(notes);
+        System.out.println(musicalWord);
     }
 
     public static Double myFunction(double value) {

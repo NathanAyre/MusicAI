@@ -25,6 +25,16 @@ public class AudioProcessor {
         }
     }
 
+    public record MusicalWord(double[] amplitudes) {
+        public String toString() {
+            StringBuilder s = new StringBuilder();
+            for (int letter = 0; letter < 120; letter++) {
+                s.append(amplitudes[letter] + "\n");
+            }
+            return s.toString();
+        }
+    }
+
     public record Sample(double[] amplitudes, double sampleFreq) {
         public String toString() {
             StringBuilder s = new StringBuilder("Sample frequency = " + sampleFreq + "\n");
@@ -73,6 +83,24 @@ public class AudioProcessor {
 
         //return the notes array as a new Notes record :D
         return new Notes(notes);
+    }
+
+    public static MusicalWord notesToMusicalWord(Notes notes) {
+        double[] letters = new double[120];
+        double maxAmplitude = 0.0;
+
+        for (int octaveNum = 0; octaveNum < 10; octaveNum++) {
+            for (int noteNum = 0; noteNum < 12; noteNum++) {
+                letters[octaveNum * 12 + noteNum] = notes.amplitudes[octaveNum][noteNum];
+                maxAmplitude = Math.max(maxAmplitude, letters[octaveNum * 10 + noteNum]);
+            }
+        }
+
+        for (int letterNum = 0; letterNum < 120; letterNum++) {
+            letters[letterNum] = ((letters[letterNum] / maxAmplitude) > 0.33 ? 1.0 : 0.0);
+        }
+
+        return new MusicalWord(letters);
     }
 
     public static Sample readSample(AudioInputStream inputStream, int sampleSize) {
