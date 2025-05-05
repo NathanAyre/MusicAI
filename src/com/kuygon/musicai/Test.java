@@ -5,23 +5,28 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.UnsupportedAudioFileException;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Test {
     public static void main(String[] args) throws Exception {
-        matrixTest();
-        layerTest();
-        leftRightLayerTest();
-        Network network = leftRightNetworkTest(null);
-        double time = System.currentTimeMillis();
-        dftTest();
-        System.out.println(System.currentTimeMillis() - time);
-        System.out.println();
-        fftTest();
-        // sampleTest();
-        // spectrumTest();
-        AudioProcessor.Notes notes = notesTest();
-        // saveNetworkTest(network);
-        wordsTest(notes);
+//        matrixTest();
+//        layerTest();
+//        leftRightLayerTest();
+//        Network network = leftRightNetworkTest(null);
+//        double time = System.currentTimeMillis();
+//        dftTest();
+//        System.out.println(System.currentTimeMillis() - time);
+//        System.out.println();
+//        fftTest();
+//        // sampleTest();
+//        // spectrumTest();
+//        AudioProcessor.Notes notes = notesTest();
+//        // saveNetworkTest(network);
+//        wordsTest(notes);
+//        embeddingsModelTest();
+//        retrieveEmbeddingsTest();
+        compareEmbeddingsTest();
     }
 
     public static void layerTest() throws Exception {
@@ -204,6 +209,50 @@ public class Test {
     public static void wordsTest(AudioProcessor.Notes notes) {
         AudioProcessor.MusicalWord musicalWord = AudioProcessor.notesToMusicalWord(notes);
         System.out.println(musicalWord);
+    }
+
+    public static void embeddingsModelTest() throws Exception {
+        AudioEmbeddings.createModel("test_files/training", "results/musicEmbeddings.txt");
+    }
+
+    public static void retrieveEmbeddingsTest() throws Exception {
+        AudioEmbeddings model = new AudioEmbeddings("results/musicEmbeddings.txt");
+        double[] embeddings = model.generateEmbeddings("test_files/training/01 Francesca da Rimini - Prologue Op.25.wav");
+        System.out.println(Arrays.toString(embeddings));
+    }
+
+    public static void compareEmbeddingsTest() throws Exception {
+        AudioEmbeddings model = new AudioEmbeddings("results/musicEmbeddings.txt");
+        File directory = new File("test_files/training");
+        File[] files = directory.listFiles();
+
+        assert files != null;
+        ArrayList<double[]> allEmbeddings = new ArrayList<>();
+
+        for (File file : files) {
+            double[] embeddings = model.generateEmbeddings(file.getPath());
+            allEmbeddings.add(embeddings);
+            System.out.println(file.getPath());
+        }
+
+        for (double[] embeddings1 : allEmbeddings) {
+            StringBuffer s = new StringBuffer();
+            for (double[] embeddings2 : allEmbeddings) {
+                double dotProduct = 0;
+                double m1 = 0;
+                double m2 = 0;
+                for (int i = 0; i < embeddings1.length; i++) {
+                    dotProduct += embeddings1[i] * embeddings2[i];
+                    m1 += Math.pow(embeddings1[i], 2.0);
+                    m2 += Math.pow(embeddings2[i], 2.0);
+                }
+
+                dotProduct /= Math.sqrt(m1) * Math.sqrt(m2);
+                s.append(Math.round(dotProduct * 1000.0) / 1000.0).append(", ");
+            }
+
+            System.out.println(s);
+        }
     }
 
     public static Double myFunction(double value) {

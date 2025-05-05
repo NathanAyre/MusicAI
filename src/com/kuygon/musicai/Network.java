@@ -47,6 +47,10 @@ public class Network {
         return layers[layers.length - 1].getOutputs();
     }
 
+    public Matrix getLayerOutputs(int layerNum) {
+        return layers[layerNum].getOutputs();
+    }
+
     public void propagate() throws Exception {
         for (int layer = 0; layer < layers.length; layer++) {
             layers[layer].propagate();

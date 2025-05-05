@@ -140,6 +140,17 @@ public class AudioProcessor {
         return new Sample(data, format.getSampleRate());
     }
 
+    public static int timeAsSampleSize(AudioFormat format, double time) {
+        int bytes = (int) (time * format.getSampleRate());
+        return bytes * format.getFrameSize();
+    }
+
+    public static void fastForward(AudioInputStream stream, double time) throws IOException {
+        AudioFormat format = stream.getFormat();
+        int bytes = timeAsSampleSize(format, time);
+        stream.skipNBytes(bytes);
+    }
+
     public static Complex[] discreteFourierTransform(double[] data) {
         int n = data.length;
         Complex[] results = new Complex[n];

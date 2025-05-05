@@ -38,6 +38,10 @@ public class Matrix {
         return m[row][col];
     }
 
+    public double[] getRow(int row) {
+        return m[row];
+    }
+
     public void scale (double scalar) {
         for (int row = 0; row < m.length; row++) {
             for (int col = 0; col < m[0].length; col++) {
